@@ -22,6 +22,7 @@ jobs:
           pip install pytest-cov
           pip install Flask
           pip install gunicorn
+          pip install flake8
       - name: Run linter
         run: |
           make lint
