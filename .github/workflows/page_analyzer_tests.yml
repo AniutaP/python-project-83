@@ -24,9 +24,9 @@ jobs:
           pip install Flask
           pip install gunicorn
           make install
-      - name: Run linter and pytest
+      - name: Run linter
         run: |
-          make check
+          make lint
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
