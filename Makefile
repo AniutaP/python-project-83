@@ -17,8 +17,8 @@ build:
 package-install:
 	poetry -m pip install --user dist/*.whl
 
-test:
-	poetry run pytest
+# test:
+	# poetry run pytest
 
 test-coverage:
 	poetry run pytest --cov=page_analyzer --cov-report xml
