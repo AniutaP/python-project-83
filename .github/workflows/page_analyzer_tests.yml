@@ -22,7 +22,6 @@ jobs:
           pip install pytest-cov
           pip install Flask
           pip install gunicorn
-          make install
       - name: Run linter
         run: |
           make lint

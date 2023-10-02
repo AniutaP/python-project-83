@@ -23,9 +23,4 @@ package-install:
 test-coverage:
 	poetry run pytest --cov=page_analyzer --cov-report xml
 
-selfcheck:
-	poetry check
-
-check: selfcheck test lint
-
 .PHONY: install dev start lint build package-install test test-coverage
