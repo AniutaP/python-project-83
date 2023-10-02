@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "hexlet-code"
+version = "0.1.0"
+description = ""
+authors = ["anna_petukhova <aniuta.petuhova2013@yandex.ru>"]
+readme = "README.md"
+repository = "https://github.com/AniutaP/python-project-83"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: Console"
+]
+packages = [
+    {include = "page_analyzer"}
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest-cov = "^4.0.0"
+Flask = "^2.3.3"
+gunicorn = "^21.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+pytest = "^7.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
