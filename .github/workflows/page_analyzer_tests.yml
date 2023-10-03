@@ -30,3 +30,4 @@ jobs:
           C_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           overageCommand: make test-coverage
+          debug: true
