@@ -19,13 +19,15 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          pip install pytest
           pip install pytest-cov
           pip install Flask
           pip install gunicorn
           pip install flake8
-      - name: Run linter
+          make install
+      - name: Run linter and pytest
         run: |
-          make lint
+          make check
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
