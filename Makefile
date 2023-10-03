@@ -18,8 +18,14 @@ test:
 	poetry run pytest
 
 test-coverage:
-	poetry run pytest --cov
+	poetry run pytest --cov=page_analyzer tests/ --cov-report xml
 
 check: test lint
 
-.PHONY: install dev start lint build test test-coverage check
+package-install:
+	python3 -m pip install dist/*.whl
+
+package-reinstall:
+	python3 -m pip install dist/*.whl --force-reinstall
+
+.PHONY: install dev start lint build test test-coverage check package-install package-reinstall

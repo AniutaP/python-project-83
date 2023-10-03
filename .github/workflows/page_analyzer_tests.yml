@@ -23,7 +23,6 @@ jobs:
           pip install pytest-cov
           pip install Flask
           pip install gunicorn
-          pip install flake8
           make install
       - name: Run linter and pytest
         run: |
@@ -31,7 +30,7 @@ jobs:
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
-          CC_TEST_REPORTER_ID: 1b5694d0faeced2468f9f3c3b5b76a9ef5b85cdba0101914a8b5b8557b8076c2
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
           debug: true
