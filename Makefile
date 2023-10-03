@@ -14,9 +14,6 @@ lint:
 build:
 	poetry build
 
-package-install:
-	poetry -m pip3 install --user dist/*.whl
-
 test:
 	poetry run pytest
 
@@ -25,4 +22,4 @@ test-coverage:
 
 check: test lint
 
-.PHONY: install dev start lint build package-install test test-coverage check
+.PHONY: install dev start lint build test test-coverage check
