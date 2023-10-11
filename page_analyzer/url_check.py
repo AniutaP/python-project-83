@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
-from validators import url
+import validators
+from urllib.parse import urlparse
+from page_analyzer.get_data import get_url_by_name
 
 
-def validate(url_addres):
-    errors = []
-    if not url:
-        errors.append('Не введен URL')
-    elif len(url_addres) > 255:
-        errors.append('Слишком длинный URL')
-    elif not url(url_addres):
-        errors.append('Некорректный URL')
-    return errors
+def validate(url):
+    error = None
+    if not validators.url:
+        error = 'Не введен URL'
+    elif len(url) > 255:
+        error = 'Слишком длинный URL'
+    elif not validators.url(url):
+        error = 'Некорректный URL'
+    else:
+        parsed_url = urlparse(url)
+        normalized_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
+        if get_url_by_name(normalized_url):
+            error = 'Уже существует'
+        url = normalized_url
+
+    validate_url = {'url': url, 'error': error}
+    return validate_url
