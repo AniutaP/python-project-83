@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 from flask import (
-    Flask, render_template, request, redirect, flash, url_for, get_flashed_messages)
+    Flask,
+    render_template,
+    request,
+    redirect,
+    flash,
+    url_for,
+    get_flashed_messages)
 import os
 from dotenv import load_dotenv
 from page_analyzer.get_data import (
