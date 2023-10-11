@@ -6,6 +6,6 @@ def test_home():
     assert response.status_code == 200
 
 
-def test_urls_conteiner():
+def test_urls_table():
     response = app.test_client().get('/urls')
     assert response.status_code == 200
