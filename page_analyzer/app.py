@@ -46,13 +46,13 @@ def urls_post():
     if error:
         if error == 'Уже существует':
             id = get_url_by_name(url)['id']
-            flash('Страница уже существует', 'alert-info')
+            flash('Страница уже существует', 'info')
             return redirect(url_for(
                 'url_show_page',
                 id=id
             ))
         else:
-            flash(error, "danger")
+            flash(error, 'danger')
             messages = get_flashed_messages(with_categories=True)
             return render_template(
                 'home_page.html',
@@ -66,7 +66,7 @@ def urls_post():
 
         add_url_string(url_string_to_dict)
         id = get_url_by_name(url)['id']
-        flash('Страница успешно добавлена', 'alert-success')
+        flash('Страница успешно добавлена', 'success')
         return redirect(url_for(
             'url_show_page',
             id=id
