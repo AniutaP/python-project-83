@@ -51,10 +51,43 @@ def get_all_strings():
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
-                        urls.name AS name
+                        urls.name AS name,
+                        url_checks.created_at AS check_last
                     FROM urls
+                    LEFT JOIN url_checks 
+                    ON urls.id = url_checks.url_id
+                    AND url_checks.id = (SELECT MAX(id)
+                                        FROM url_checks
+                                        WHERE url_id = urls.id)
                     ORDER BY urls.id DESC;'''
         cursor.execute(query)
         urls = cursor.fetchall()
     connection.close()
     return urls
+
+
+def add_check(check):
+    connection = connect(DATABASE_URL)
+    with connection.cursor() as cursor:
+        query = '''INSERT
+                   INTO url_checks (url_id, created_at)
+                   VALUES (%s, %s)'''
+        cursor.execute(query, (
+            check['url_id'],
+            check['checked_at']
+        ))
+        connection.commit()
+    connection.close()
+
+
+def get_all_checks(id):
+    connection = connect(DATABASE_URL)
+    with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+        query = '''SELECT *
+                    FROM url_checks
+                    WHERE url_id=(%s)
+                    ORDER BY id DESC'''
+        cursor.execute(query, [id])
+        checks = cursor.fetchall()
+    connection.close()
+    return checks

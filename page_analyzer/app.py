@@ -10,7 +10,12 @@ from flask import (
 import os
 from dotenv import load_dotenv
 from page_analyzer.get_data import (
-    get_all_strings, get_url_by_id, get_url_by_name, add_url_string)
+    get_all_strings,
+    get_url_by_id,
+    get_url_by_name,
+    add_url_string,
+    add_check,
+    get_all_checks)
 from page_analyzer.url_check import validate
 from datetime import datetime
 
@@ -26,7 +31,7 @@ def home():
 
 
 @app.get('/urls')
-def urls_table():
+def urls_checks_table():
     urls = get_all_strings()
     messages = get_flashed_messages(with_categories=True)
     return render_template(
@@ -76,9 +81,25 @@ def urls_post():
 @app.route('/urls/<int:id>')
 def url_show_page(id):
     url = get_url_by_id(id)
+    checks = get_all_checks(id)
     messages = get_flashed_messages(with_categories=True)
     return render_template(
         'urls_id.html',
         url=url,
-        messages=messages
+        messages=messages,
+        checks=checks
     )
+
+
+@app.post('/urls/<int:id>/checks')
+def url_checks(id):
+    check = {
+        'checked_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'url_id': id
+    }
+    add_check(check)
+    flash('Страница успешно проверена', 'success')
+    return redirect(url_for(
+        'url_show_page',
+        id=id
+    ))
