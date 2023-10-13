@@ -54,7 +54,7 @@ def get_all_strings():
                         urls.name AS name,
                         url_checks.created_at AS check_last
                     FROM urls
-                    LEFT JOIN url_checks 
+                    LEFT JOIN url_checks
                     ON urls.id = url_checks.url_id
                     AND url_checks.id = (SELECT MAX(id)
                                         FROM url_checks
