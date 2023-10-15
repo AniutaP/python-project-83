@@ -11,10 +11,8 @@ import os
 from dotenv import load_dotenv
 from page_analyzer.get_data import (
     get_all_strings,
-    get_url_by_id,
-    get_url_by_name,
-    add_url_string,
-    add_check,
+    get_url_by_field,
+    add_in_db,
     get_all_checks)
 from page_analyzer.url_check import validate
 from datetime import datetime
@@ -55,21 +53,24 @@ def urls_post():
             'home_page.html',
             messages=messages
         ), 422
+    field = 'name'
+    id = get_url_by_field(field, url)['id']
 
-    id = get_url_by_name(url)['id']
-
-    if get_url_by_name(url):
+    if get_url_by_field(field, url):
         flash('Страница уже существует', 'info')
         return redirect(url_for(
             'url_show_page',
             id=id
         ))
     else:
-        url_string_to_dict = {
+        query = '''INSERT
+                    INTO urls (name, created_at)
+                    VALUES (%s, %s)'''
+        values = {
             'url': url,
             'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-        add_url_string(url_string_to_dict)
+        add_in_db(query, values)
         flash('Страница успешно добавлена', 'success')
         return redirect(url_for(
             'url_show_page',
@@ -79,7 +80,8 @@ def urls_post():
 
 @app.route('/urls/<int:id>')
 def url_show_page(id):
-    url = get_url_by_id(id)
+    field = 'id'
+    url = get_url_by_field(field, id)
     checks = get_all_checks(id)
     messages = get_flashed_messages(with_categories=True)
     return render_template(
@@ -96,7 +98,10 @@ def url_checks(id):
         'checked_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'url_id': id
     }
-    add_check(check)
+    query = '''INSERT
+                       INTO url_checks (url_id, created_at)
+                       VALUES (%s, %s)'''
+    add_in_db(query, check)
     flash('Страница успешно проверена', 'success')
     return redirect(url_for(
         'url_show_page',
