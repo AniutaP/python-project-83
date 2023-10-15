@@ -1,7 +1,7 @@
 # PAGE ANALYZER PROJECT 
 
 
-[![Actions Status](https://github.com/AniutaP/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AniutaP/python-project-83/actions)  [![Test Coverage](https://api.codeclimate.com/v1/badges/30fb0a5c5a377e164835/test_coverage)](https://codeclimate.com/github/AniutaP/python-project-83/test_coverage)
+[![Actions Status](https://github.com/AniutaP/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AniutaP/python-project-83/actions)  [![Maintainability](https://api.codeclimate.com/v1/badges/30fb0a5c5a377e164835/maintainability)](https://codeclimate.com/github/AniutaP/python-project-83/maintainability)  [![Test Coverage](https://api.codeclimate.com/v1/badges/30fb0a5c5a377e164835/test_coverage)](https://codeclimate.com/github/AniutaP/python-project-83/test_coverage)
 
 
 ### Description

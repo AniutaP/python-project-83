@@ -53,10 +53,10 @@ def urls_post():
             'home_page.html',
             messages=messages
         ), 422
-    field = 'name'
-    id = get_url_by_field(field, url)['id']
 
-    if get_url_by_field(field, url):
+    id = get_url_by_field('name', url)['id']
+
+    if get_url_by_field('name', url):
         flash('Страница уже существует', 'info')
         return redirect(url_for(
             'url_show_page',
@@ -80,8 +80,7 @@ def urls_post():
 
 @app.route('/urls/<int:id>')
 def url_show_page(id):
-    field = 'id'
-    url = get_url_by_field(field, id)
+    url = get_url_by_field('id', id)
     checks = get_all_checks(id)
     messages = get_flashed_messages(with_categories=True)
     return render_template(
