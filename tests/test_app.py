@@ -1,6 +1,5 @@
 from page_analyzer.app import app
 from page_analyzer.url_check import validate
-from page_analyzer.get_data import get_url_by_name
 import string
 import random
 
@@ -22,4 +21,3 @@ def test_validate():
 
     url = 'bcajsbc'
     assert validate(url) == {'url': 'bcajsbc', 'error': 'Некорректный URL'}
-

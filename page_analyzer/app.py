@@ -49,28 +49,27 @@ def urls_post():
     url = validation['url']
 
     if error:
-        if error == 'Уже существует':
-            id = get_url_by_name(url)['id']
-            flash('Страница уже существует', 'info')
-            return redirect(url_for(
-                'url_show_page',
-                id=id
-            ))
-        else:
             flash(error, 'danger')
             messages = get_flashed_messages(with_categories=True)
             return render_template(
                 'home_page.html',
                 messages=messages
             ), 422
+
+    id = get_url_by_name(url)['id']
+
+    if get_url_by_name(url):
+        flash('Страница уже существует', 'info')
+        return redirect(url_for(
+            'url_show_page',
+            id=id
+        ))
     else:
         url_string_to_dict = {
             'url': url,
             'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-
         add_url_string(url_string_to_dict)
-        id = get_url_by_name(url)['id']
         flash('Страница успешно добавлена', 'success')
         return redirect(url_for(
             'url_show_page',

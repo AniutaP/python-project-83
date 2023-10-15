@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import validators
 from urllib.parse import urlparse
-from page_analyzer.get_data import get_url_by_name
 
 
 def validate(url):
@@ -15,8 +14,6 @@ def validate(url):
     else:
         parsed_url = urlparse(url)
         normalized_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
-        if get_url_by_name(normalized_url):
-            error = 'Уже существует'
         url = normalized_url
 
     validate_url = {'url': url, 'error': error}
