@@ -49,12 +49,12 @@ def urls_post():
     url = validation['url']
 
     if error:
-            flash(error, 'danger')
-            messages = get_flashed_messages(with_categories=True)
-            return render_template(
-                'home_page.html',
-                messages=messages
-            ), 422
+        flash(error, 'danger')
+        messages = get_flashed_messages(with_categories=True)
+        return render_template(
+            'home_page.html',
+            messages=messages
+        ), 422
 
     id = get_url_by_name(url)['id']
 
