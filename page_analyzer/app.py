@@ -13,9 +13,11 @@ from page_analyzer.get_data import (
     get_all_strings,
     get_url_by_field,
     add_in_db,
-    get_all_checks)
+    get_all_checks,
+    get_url_info)
 from page_analyzer.url_check import validate
 from datetime import datetime
+import requests
 
 
 load_dotenv()
@@ -54,9 +56,8 @@ def urls_post():
             messages=messages
         ), 422
 
-    id = get_url_by_field('name', url)['id']
-
     if get_url_by_field('name', url):
+        id = get_url_by_field('name', url)['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for(
             'url_show_page',
@@ -66,11 +67,16 @@ def urls_post():
         query = '''INSERT
                     INTO urls (name, created_at)
                     VALUES (%s, %s)'''
-        values = {
+
+        url_data = {
             'url': url,
             'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
+
+        values = (url_data['url'], url_data['created_at'])
+
         add_in_db(query, values)
+        id = get_url_by_field('name', url)['id']
         flash('Страница успешно добавлена', 'success')
         return redirect(url_for(
             'url_show_page',
@@ -93,15 +99,27 @@ def url_show_page(id):
 
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
-    check = {
-        'checked_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'url_id': id
-    }
-    query = '''INSERT
-                       INTO url_checks (url_id, created_at)
-                       VALUES (%s, %s)'''
-    add_in_db(query, check)
-    flash('Страница успешно проверена', 'success')
+    try:
+        url = get_url_by_field('id', id)['name']
+        check = get_url_info(url)
+        check['url_id'] = id
+        check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        values = (
+            check['url_id'],
+            check['status_code'],
+            check['checked_at']
+        )
+
+        query = '''INSERT
+                    INTO url_checks (url_id, status_code, created_at)
+                    VALUES (%s, %s, %s)'''
+
+        add_in_db(query, values)
+        flash('Страница успешно проверена', 'success')
+
+    except requests.RequestException:
+        flash('Произошла ошибка при проверке', 'danger')
+
     return redirect(url_for(
         'url_show_page',
         id=id
