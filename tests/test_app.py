@@ -20,6 +20,6 @@ def test_validate():
     url = random.choices(string.ascii_letters + string.digits, k=256)
     assert validate(url) == {'url': url, 'error': 'Слишком длинный URL'}
 
-    url = 'bckajsbc'
-    assert validate(url) == {'url': 'bckajsbc', 'error': 'Некорректный URL'}
+    url = 'bcajsbc'
+    assert validate(url) == {'url': 'bcajsbc', 'error': 'Некорректный URL'}
 
