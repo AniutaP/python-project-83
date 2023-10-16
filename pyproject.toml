@@ -17,7 +17,7 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "^3.10.12"
+python = ">=3.10.12,<4.0"
 flake8 = "^6.0.0"
 pytest-cov = "^4.0.0"
 Flask = "^2.3.3"
