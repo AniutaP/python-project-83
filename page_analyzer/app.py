@@ -107,12 +107,22 @@ def url_checks(id):
         values = (
             check['url_id'],
             check['status_code'],
+            check['h1'],
+            check['title'],
+            check['description'],
             check['checked_at']
         )
 
         query = '''INSERT
-                    INTO url_checks (url_id, status_code, created_at)
-                    VALUES (%s, %s, %s)'''
+                    INTO url_checks (
+                        url_id,
+                        status_code,
+                        h1,
+                        title,
+                        description,
+                        created_at
+                        )
+                    VALUES (%s, %s, %s, %s, %s, %s)'''
 
         add_in_db(query, values)
         flash('Страница успешно проверена', 'success')

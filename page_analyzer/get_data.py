@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 import requests
+from bs4 import BeautifulSoup
 
 
 load_dotenv()
@@ -65,8 +66,30 @@ def get_all_checks(id):
 
 def get_url_info(url):
     response = requests.get(url)
+
     if response.status_code != 200:
         raise requests.RequestException
 
     check = {'status_code': response.status_code}
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    h1 = soup.find('h1')
+    if h1:
+        check['h1'] = h1.text
+    else:
+        check['h1'] = ''
+
+    title = soup.find('title')
+    if title:
+        check['title'] = title.text
+    else:
+        check['title'] = ''
+
+    description = soup.find('meta', attrs={'name': 'description'})
+    if description:
+        check['description'] = description['content']
+    else:
+        check['description'] = ''
+
     return check
