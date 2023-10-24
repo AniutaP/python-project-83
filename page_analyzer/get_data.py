@@ -3,16 +3,16 @@ from dotenv import load_dotenv
 from psycopg2.extras import RealDictCursor
 import requests
 from bs4 import BeautifulSoup
-from psycopg2.pool import SimpleConnectionPool
+from psycopg2 import pool
 
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
-pool = SimpleConnectionPool(minconn=1, maxconn=10, dsn=DATABASE_URL)
+postgresql_pool = pool.SimpleConnectionPool(minconn=1, maxconn=10, dsn=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
-    connection = pool.getconn()
+    connection = postgresql_pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = f'''SELECT *
                     FROM urls
@@ -20,21 +20,21 @@ def get_url_by_field(field, data):
         cursor.execute(query, [data])
         urls = cursor.fetchone()
     cursor.close()
-    pool.putconn(connection)
+    postgresql_pool.putconn(connection)
     return urls
 
 
 def add_in_db(query, values):
-    connection = pool.getconn()
+    connection = postgresql_pool.getconn()
     with connection.cursor() as cursor:
         cursor.execute(query, values)
         connection.commit()
     cursor.close()
-    pool.putconn(connection)
+    postgresql_pool.putconn(connection)
 
 
 def get_all_strings():
-    connection = pool.getconn()
+    connection = postgresql_pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
@@ -51,12 +51,12 @@ def get_all_strings():
         cursor.execute(query)
         urls = cursor.fetchall()
     cursor.close()
-    pool.putconn(connection)
+    postgresql_pool.putconn(connection)
     return urls
 
 
 def get_all_checks(id):
-    connection = pool.getconn()
+    connection = postgresql_pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT *
                     FROM url_checks
@@ -65,7 +65,7 @@ def get_all_checks(id):
         cursor.execute(query, [id])
         checks = cursor.fetchall()
     cursor.close()
-    pool.putconn(connection)
+    postgresql_pool.putconn(connection)
     return checks
 
 
