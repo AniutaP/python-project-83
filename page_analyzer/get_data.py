@@ -8,34 +8,36 @@ from psycopg2 import pool
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
-postgresql_pool = pool.SimpleConnectionPool(minconn=1, maxconn=10, dsn=DATABASE_URL)
+postgresql_pool = pool.SimpleConnectionPool(minconn=4,
+                                            maxconn=10,
+                                            dsn=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
-    connection = postgresql_pool.getconn()
-    with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+    connection1 = postgresql_pool.getconn()
+    with connection1.cursor(cursor_factory=RealDictCursor) as cursor:
         query = f'''SELECT *
                     FROM urls
                     WHERE {field}=(%s);'''
         cursor.execute(query, [data])
         urls = cursor.fetchone()
     cursor.close()
-    postgresql_pool.putconn(connection)
+    postgresql_pool.putconn(connection1)
     return urls
 
 
 def add_in_db(query, values):
-    connection = postgresql_pool.getconn()
-    with connection.cursor() as cursor:
+    connection2 = postgresql_pool.getconn()
+    with connection2.cursor() as cursor:
         cursor.execute(query, values)
-        connection.commit()
+        connection2.commit()
     cursor.close()
-    postgresql_pool.putconn(connection)
+    postgresql_pool.putconn(connection2)
 
 
 def get_all_strings():
-    connection = postgresql_pool.getconn()
-    with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+    connection3 = postgresql_pool.getconn()
+    with connection3.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
                         urls.name AS name,
@@ -51,13 +53,13 @@ def get_all_strings():
         cursor.execute(query)
         urls = cursor.fetchall()
     cursor.close()
-    postgresql_pool.putconn(connection)
+    postgresql_pool.putconn(connection3)
     return urls
 
 
 def get_all_checks(id):
-    connection = postgresql_pool.getconn()
-    with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+    connection4 = postgresql_pool.getconn()
+    with connection4.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT *
                     FROM url_checks
                     WHERE url_id=(%s)
@@ -65,7 +67,7 @@ def get_all_checks(id):
         cursor.execute(query, [id])
         checks = cursor.fetchall()
     cursor.close()
-    postgresql_pool.putconn(connection)
+    postgresql_pool.putconn(connection4)
     return checks
 
 
