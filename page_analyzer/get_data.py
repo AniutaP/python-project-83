@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 import requests
 from bs4 import BeautifulSoup
