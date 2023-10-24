@@ -4,34 +4,38 @@ from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 import requests
 from bs4 import BeautifulSoup
+from psycopg2.pool import SimpleConnectionPool
 
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
+pool = SimpleConnectionPool(minconn=1, maxconn=10, dsn=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
-    connection = connect(DATABASE_URL)
+    connection = pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = f'''SELECT *
                     FROM urls
                     WHERE {field}=(%s);'''
         cursor.execute(query, [data])
         urls = cursor.fetchone()
-    connection.close()
+    cursor.close()
+    pool.putconn(connection)
     return urls
 
 
 def add_in_db(query, values):
-    connection = connect(DATABASE_URL)
+    connection = pool.getconn()
     with connection.cursor() as cursor:
         cursor.execute(query, values)
         connection.commit()
-    connection.close()
+    cursor.close()
+    pool.putconn(connection)
 
 
 def get_all_strings():
-    connection = connect(DATABASE_URL)
+    connection = pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT DISTINCT ON (urls.id)
                         urls.id AS id,
@@ -47,12 +51,13 @@ def get_all_strings():
                     ORDER BY urls.id DESC;'''
         cursor.execute(query)
         urls = cursor.fetchall()
-    connection.close()
+    cursor.close()
+    pool.putconn(connection)
     return urls
 
 
 def get_all_checks(id):
-    connection = connect(DATABASE_URL)
+    connection = pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
         query = '''SELECT *
                     FROM url_checks
@@ -60,7 +65,8 @@ def get_all_checks(id):
                     ORDER BY id DESC'''
         cursor.execute(query, [id])
         checks = cursor.fetchall()
-    connection.close()
+    cursor.close()
+    pool.putconn(connection)
     return checks
 
 
