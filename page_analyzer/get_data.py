@@ -39,7 +39,7 @@ def add_in_db(query, values):
 def get_all_strings():
     connection = postgresql_pool.getconn()
     with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-        query = '''SELECT DISTINCT ON (urls.id)
+        query = '''SELECT
                         urls.id AS id,
                         urls.name AS name,
                         url_checks.created_at AS check_last,
@@ -50,7 +50,7 @@ def get_all_strings():
                     AND url_checks.id = (SELECT MAX(id)
                                         FROM url_checks
                                         WHERE url_id = urls.id)
-                    ORDER BY urls.id DESC;'''
+                    ORDER BY urls.id;'''
         cursor.execute(query)
         urls = cursor.fetchall()
     cursor.close()
