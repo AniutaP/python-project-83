@@ -18,7 +18,7 @@ test:
 	poetry run pytest
 
 test-coverage:
-	poetry run pytest --cov=page_analyzer tests/ --cov-report xml
+	poetry run pytest --cov=page_analyzer --cov-report xml
 
 check: test lint
 
