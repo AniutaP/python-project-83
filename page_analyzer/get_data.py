@@ -10,7 +10,7 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 postgresql_pool = pool.SimpleConnectionPool(minconn=4,
                                             maxconn=10,
-                                            dsn=DATABASE_URL)
+                                            db_url=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
