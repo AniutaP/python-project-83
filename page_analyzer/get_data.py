@@ -8,8 +8,13 @@ from psycopg2 import pool
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
+APP_ENV = os.getenv('APP_ENV')
 
-postgresql_pool = pool.SimpleConnectionPool(minconn=1,
+
+if APP_ENV == "test":
+    postgresql_pool = None
+else:
+    postgresql_pool = pool.SimpleConnectionPool(minconn=1,
                                             maxconn=10,
                                             dsn=DATABASE_URL)
 
