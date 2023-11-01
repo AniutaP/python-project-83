@@ -5,6 +5,7 @@ import random
 
 
 def test_home():
+    app.config['TESTING'] = True
     response = app.test_client().get('/')
     html = response.data.decode()
     assert response.status_code == 200
