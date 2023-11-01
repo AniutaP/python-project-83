@@ -15,8 +15,8 @@ if APP_ENV == "test":
     postgresql_pool = None
 else:
     postgresql_pool = pool.SimpleConnectionPool(minconn=1,
-                                            maxconn=10,
-                                            dsn=DATABASE_URL)
+                                                maxconn=10,
+                                                dsn=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
