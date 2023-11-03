@@ -7,8 +7,10 @@ from psycopg2 import pool
 
 
 load_dotenv()
+
 DATABASE_URL = os.getenv('DATABASE_URL')
-APP_ENV = None
+APP_ENV = os.getenv('APP_ENV')
+
 postgresql_pool = None
 
 if APP_ENV != 'tests':
