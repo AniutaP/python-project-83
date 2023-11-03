@@ -3,6 +3,12 @@ from page_analyzer.url_check import validate
 import string
 import random
 import pytest
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+APP_ENV = os.getenv('APP_ENV')
 
 
 @pytest.fixture
@@ -30,3 +36,7 @@ def test_validate():
 
     url = 'bcajsbc'
     assert validate(url) == {'url': 'bcajsbc', 'error': 'Некорректный URL'}
+
+
+if __name__ == '__main__':
+    unittest.main()
