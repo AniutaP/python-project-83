@@ -13,7 +13,7 @@ APP_ENV = os.getenv('APP_ENV')
 
 postgresql_pool = None
 
-if APP_ENV != 'tests':
+if APP_ENV != "tests":
     postgresql_pool = pool.SimpleConnectionPool(minconn=1,
                                                 maxconn=10,
                                                 dsn=DATABASE_URL)
