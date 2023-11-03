@@ -9,13 +9,9 @@ from psycopg2 import pool
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-
-if DATABASE_URL == "test":
-    postgresql_pool = pool.SimpleConnectionPool(minconn=0, maxconn=0)
-else:
-    postgresql_pool = pool.SimpleConnectionPool(minconn=1,
-                                                maxconn=10,
-                                                dsn=DATABASE_URL)
+postgresql_pool = pool.SimpleConnectionPool(minconn=1,
+                                            maxconn=10,
+                                            dsn=DATABASE_URL)
 
 
 def get_url_by_field(field, data):
