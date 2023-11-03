@@ -21,7 +21,6 @@ def test_home(client):
     assert '<a class="nav-link" href="/urls">Сайты</a>' in html
 
 
-@pytest.fixture()
 def test_validate():
     url = 'https://check.su/contact'
     assert validate(url) == {'url': 'https://check.su', 'error': None}
