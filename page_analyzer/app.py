@@ -14,15 +14,18 @@ from page_analyzer.get_data import (
     get_url_by_field,
     add_in_db,
     get_all_checks,
-    get_url_info)
+    get_url_info,
+    url_checks_by_id,
+    get_data_for_post_url)
 from page_analyzer.url_check import validate
-from datetime import datetime
 import requests
+from page_analyzer.get_conn import init_db_pool
 
 
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+init_db_pool()
 
 
 @app.route('/')
@@ -64,24 +67,14 @@ def urls_post():
             'url_show_page',
             id=id
         ))
-    else:
-        query = '''INSERT
-                    INTO urls (name, created_at)
-                    VALUES (%s, %s)'''
 
-        url_data = {
-            'url': url,
-            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-
-        values = (url_data['url'], url_data['created_at'])
-
-        add_in_db(query, values)
-        id = get_url_by_field('name', url)['id']
-        flash('Страница успешно добавлена', 'success')
-        return redirect(url_for(
-            'url_show_page',
-            id=id
+    query, values = get_data_for_post_url(url)
+    add_in_db(query, values)
+    id = get_url_by_field('name', url)['id']
+    flash('Страница успешно добавлена', 'success')
+    return redirect(url_for(
+        'url_show_page',
+        id=id
         ))
 
 
@@ -103,28 +96,7 @@ def url_checks(id):
     try:
         url = get_url_by_field('id', id)['name']
         check = get_url_info(url)
-        check['url_id'] = id
-        check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        values = (
-            check['url_id'],
-            check['status_code'],
-            check['h1'],
-            check['title'],
-            check['description'],
-            check['checked_at']
-        )
-
-        query = '''INSERT
-                    INTO url_checks (
-                        url_id,
-                        status_code,
-                        h1,
-                        title,
-                        description,
-                        created_at
-                        )
-                    VALUES (%s, %s, %s, %s, %s, %s)'''
-
+        query, values = url_checks_by_id(id, check)
         add_in_db(query, values)
         flash('Страница успешно проверена', 'success')
 
