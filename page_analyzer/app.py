@@ -95,9 +95,11 @@ def url_checks(id):
         url = get_url_by_field('id', id)['name']
         check = get_url_info(url)
         url_checks_by_id(id, check)
+        response = requests.get(url)
+        response.raise_for_status()
         flash('Страница успешно проверена', 'success')
 
-    except requests.RequestException:
+    except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
 
     return redirect(url_for(

@@ -92,10 +92,6 @@ def get_all_checks(id):
 
 def get_url_info(url):
     response = requests.get(url)
-
-    if response.status_code != 200:
-        raise requests.RequestException
-
     check = {'status_code': response.status_code}
     soup = BeautifulSoup(response.text, 'html.parser')
 
