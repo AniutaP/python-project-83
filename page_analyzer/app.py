@@ -29,7 +29,6 @@ init_db_pool()
 
 @app.route('/')
 def index():
-
     return render_template('home_page.html')
 
 
