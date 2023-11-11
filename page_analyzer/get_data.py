@@ -16,17 +16,7 @@ def get_url_by_field(field, data):
     return urls
 
 
-def add_in_db(query, values):
-    with get_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(query, values)
-
-
-def get_data_for_post_url(url):
-    query = '''INSERT
-                INTO urls (name, created_at)
-                VALUES (%s, %s)'''
-
+def insert_url_in_db(url):
     url_data = {
         'url': url,
         'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -34,10 +24,15 @@ def get_data_for_post_url(url):
 
     values = (url_data['url'], url_data['created_at'])
 
-    return query, values
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            query = '''INSERT
+                        INTO urls (name, created_at)
+                        VALUES (%s, %s)'''
+            cursor.execute(query, values)
 
 
-def get_all_strings():
+def get_urls_with_checks():
     with get_connection() as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             query = '''SELECT
@@ -68,8 +63,9 @@ def url_checks_by_id(id, check):
         check['description'],
         check['checked_at']
     )
-
-    query = '''INSERT
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            query = '''INSERT
                         INTO url_checks (
                             url_id,
                             status_code,
@@ -79,8 +75,7 @@ def url_checks_by_id(id, check):
                             created_at
                             )
                         VALUES (%s, %s, %s, %s, %s, %s)'''
-
-    return query, values
+            cursor.execute(query, values)
 
 
 def get_all_checks(id):
@@ -102,7 +97,6 @@ def get_url_info(url):
         raise requests.RequestException
 
     check = {'status_code': response.status_code}
-
     soup = BeautifulSoup(response.text, 'html.parser')
 
     h1 = soup.find('h1')

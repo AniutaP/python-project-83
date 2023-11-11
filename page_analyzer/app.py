@@ -10,13 +10,12 @@ from flask import (
 import os
 from dotenv import load_dotenv
 from page_analyzer.get_data import (
-    get_all_strings,
+    get_urls_with_checks,
     get_url_by_field,
-    add_in_db,
     get_all_checks,
     get_url_info,
     url_checks_by_id,
-    get_data_for_post_url)
+    insert_url_in_db)
 from page_analyzer.url_check import validate
 import requests
 from page_analyzer.get_conn import init_db_pool
@@ -29,14 +28,14 @@ init_db_pool()
 
 
 @app.route('/')
-def home():
+def index():
 
     return render_template('home_page.html')
 
 
 @app.get('/urls')
-def urls_checks_table():
-    urls = get_all_strings()
+def urls_checks_show():
+    urls = get_urls_with_checks()
     messages = get_flashed_messages(with_categories=True)
     return render_template(
         'urls.html',
@@ -68,8 +67,7 @@ def urls_post():
             id=id
         ))
 
-    query, values = get_data_for_post_url(url)
-    add_in_db(query, values)
+    insert_url_in_db(url)
     id = get_url_by_field('name', url)['id']
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for(
@@ -96,8 +94,7 @@ def url_checks(id):
     try:
         url = get_url_by_field('id', id)['name']
         check = get_url_info(url)
-        query, values = url_checks_by_id(id, check)
-        add_in_db(query, values)
+        url_checks_by_id(id, check)
         flash('Страница успешно проверена', 'success')
 
     except requests.RequestException:
