@@ -35,11 +35,15 @@ def insert_url_in_db(url):
 def get_urls_with_checks():
     with get_connection() as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute('SELECT * FROM urls ORDER BY id DESC;')
+            query_sort_urls = '''SELECT *
+                                FROM urls
+                                ORDER BY id DESC;'''
+            cursor.execute(query_sort_urls)
             urls = cursor.fetchall()
-            cursor.execute('SELECT DISTINCT ON (url_id) *'
-                           'FROM url_checks '
-                           'ORDER BY url_id DESC, created_at DESC;')
+            query_sort_checks = '''SELECT DISTINCT ON (url_id) *'
+                                    FROM url_checks
+                                    ORDER BY url_id DESC, created_at DESC;'''
+            cursor.execute(query_sort_checks)
             checks = cursor.fetchall()
 
     result = []
