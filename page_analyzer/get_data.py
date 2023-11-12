@@ -34,7 +34,7 @@ def insert_url_in_db(url):
 
 def get_urls_with_checks():
     with get_connection() as connection:
-        with connection.cursor() as cursor:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute('SELECT * FROM urls ORDER BY id DESC;')
             urls = cursor.fetchall()
             cursor.execute('SELECT DISTINCT ON (url_id) *'
@@ -43,14 +43,14 @@ def get_urls_with_checks():
             checks = cursor.fetchall()
 
     result = []
-    checks_by_url_id = {check[1]: check for check in checks}
+    checks_by_url_id = {check['url_id']: check for check in checks}
     for url in urls:
         url_data = {}
-        check = checks_by_url_id.get(url[0])
-        url_data['id'] = url[0]
-        url_data['name'] = url[1]
-        url_data['last_check_date'] = check[6] if check else ''
-        url_data['status_code'] = check[2] if check else ''
+        check = checks_by_url_id.get(url['id'])
+        url_data['id'] = url['id']
+        url_data['name'] = url['name']
+        url_data['last_check_date'] = check['created_at'] if check else ''
+        url_data['status_code'] = check['status_code'] if check else ''
         result.append(url_data)
 
     return result
