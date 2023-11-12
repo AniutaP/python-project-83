@@ -40,7 +40,7 @@ def get_urls_with_checks():
                                 ORDER BY id DESC;'''
             cursor.execute(query_sort_urls)
             urls = cursor.fetchall()
-            query_sort_checks = '''SELECT DISTINCT ON (url_id) *'
+            query_sort_checks = '''SELECT DISTINCT ON (url_id) *
                                     FROM url_checks
                                     ORDER BY url_id DESC, created_at DESC;'''
             cursor.execute(query_sort_checks)
