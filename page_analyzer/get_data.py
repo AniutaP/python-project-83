@@ -11,7 +11,7 @@ def get_url_by_field(field, data):
             query = f'''SELECT *
                         FROM urls
                         WHERE {field}=(%s);'''
-            cursor.execute(query, [data])
+            cursor.execute(query, (data, ))
             url = cursor.fetchone()
     return url
 
