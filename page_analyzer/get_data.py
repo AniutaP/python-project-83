@@ -12,8 +12,8 @@ def get_url_by_field(field, data):
                         FROM urls
                         WHERE {field}=(%s);'''
             cursor.execute(query, [data])
-            urls = cursor.fetchone()
-    return urls
+            url = cursor.fetchone()
+    return url
 
 
 def insert_url_in_db(url):
@@ -25,7 +25,7 @@ def insert_url_in_db(url):
     values = (url_data['url'], url_data['created_at'])
 
     with get_connection() as connection:
-        with connection.cursor() as cursor:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             query = '''INSERT
                         INTO urls (name, created_at)
                         VALUES (%s, %s)'''
@@ -34,22 +34,26 @@ def insert_url_in_db(url):
 
 def get_urls_with_checks():
     with get_connection() as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = '''SELECT
-                            urls.id AS id,
-                            urls.name AS name,
-                            url_checks.created_at AS check_last,
-                            url_checks.status_code AS status_code
-                        FROM urls
-                        LEFT JOIN url_checks
-                        ON urls.id = url_checks.url_id
-                        AND url_checks.id = (SELECT MAX(id)
-                                            FROM url_checks
-                                            WHERE url_id = urls.id)
-                        ORDER BY urls.id;'''
-            cursor.execute(query)
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * FROM urls ORDER BY id DESC;')
             urls = cursor.fetchall()
-    return urls
+            cursor.execute('SELECT DISTINCT ON (url_id) *'
+                           'FROM url_checks '
+                           'ORDER BY url_id DESC, created_at DESC;')
+            checks = cursor.fetchall()
+
+    result = []
+    checks_by_url_id = {check[1]: check for check in checks}
+    for url in urls:
+        url_data = {}
+        check = checks_by_url_id.get(url[0])
+        url_data['id'] = url[0]
+        url_data['name'] = url[1]
+        url_data['last_check_date'] = check[6] if check else ''
+        url_data['status_code'] = check[2] if check else ''
+        result.append(url_data)
+
+    return result
 
 
 def url_checks_by_id(id, check):
@@ -64,7 +68,7 @@ def url_checks_by_id(id, check):
         check['checked_at']
     )
     with get_connection() as connection:
-        with connection.cursor() as cursor:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             query = '''INSERT
                         INTO url_checks (
                             url_id,
@@ -85,7 +89,7 @@ def get_all_checks(id):
                         FROM url_checks
                         WHERE url_id=(%s)
                         ORDER BY id DESC'''
-            cursor.execute(query, [id])
+            cursor.execute(query, (id, ))
             checks = cursor.fetchall()
     return checks
 
