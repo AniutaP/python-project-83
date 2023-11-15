@@ -9,6 +9,8 @@ Page Analyzer is a website that analyzes the specified pages for SEO suitability
 In fact, this is a full-fledged application based on the Flask framework using Bootstrap components for visual design and with its own database designed. 
 The psycopg library is used to execute SQL queries to the database.
 
+### Deploy the app
+`https://anna-jjkk.onrender.com/`
 
 ### System requirements:
 * programming Language - Python 3
