@@ -10,7 +10,7 @@ In fact, this is a full-fledged application based on the Flask framework using B
 The psycopg library is used to execute SQL queries to the database.
 
 ### Deploy the app
-`https://page-analyzer-47pf.onrender.com`
+[page-analyzer-47pf.onrender.com](https://page-analyzer-47pf.onrender.com)
 
 ### System requirements:
 * programming Language - Python 3
