@@ -117,7 +117,7 @@ def get_url_info(url):
 
     description = soup.find('meta', attrs={'name': 'description'})
     if description:
-        check['description'] = description['content']
+        check['description'] = description['content'][0:255]
     else:
         check['description'] = ''
 
