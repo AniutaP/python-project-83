@@ -14,7 +14,7 @@ from page_analyzer.get_data import (
     get_url_by_field,
     get_all_checks,
     get_url_info,
-    url_checks_by_id,
+    insert_check,
     insert_url_in_db)
 from page_analyzer.url_check import validate
 import requests
@@ -93,7 +93,7 @@ def url_checks(id):
     try:
         url = get_url_by_field('id', id)['name']
         check = get_url_info(url)
-        url_checks_by_id(id, check)
+        insert_check(id, check)
         response = requests.get(url)
         response.raise_for_status()
         flash('Страница успешно проверена', 'success')

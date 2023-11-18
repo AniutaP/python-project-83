@@ -11,7 +11,7 @@ def get_url_by_field(field, data):
             query = f'''SELECT *
                         FROM urls
                         WHERE {field}=(%s);'''
-            cursor.execute(query, (data, ))
+            cursor.execute(query, [data])
             url = cursor.fetchone()
     return url
 
@@ -60,7 +60,7 @@ def get_urls_with_checks():
     return result
 
 
-def url_checks_by_id(id, check):
+def insert_check(id, check):
     check['url_id'] = id
     check['checked_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     values = (
@@ -93,7 +93,7 @@ def get_all_checks(id):
                         FROM url_checks
                         WHERE url_id=(%s)
                         ORDER BY id DESC'''
-            cursor.execute(query, (id, ))
+            cursor.execute(query, [id])
             checks = cursor.fetchall()
     return checks
 
