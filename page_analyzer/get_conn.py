@@ -14,9 +14,12 @@ def init_db_pool():
         postgresql_pool = pool.SimpleConnectionPool(minconn=1,
                                                     maxconn=10,
                                                     dsn=DATABASE_URL)
+    else:
+        postgresql_pool = None
+
+
 @contextmanager
 def get_connection():
-    global postgresql_pool
     connection = None
     try:
         connection = postgresql_pool.getconn()
