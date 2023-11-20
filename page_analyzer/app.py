@@ -18,11 +18,13 @@ from page_analyzer.get_data import (
     insert_url_in_db)
 from page_analyzer.url_check import validate
 import requests
+from page_analyzer.get_conn import init_db_pool
 
 
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+init_db_pool()
 
 
 @app.route('/')
